@@ -129,6 +129,9 @@ def calculate_probability_density_function(skewness_, kurtosis_, sigma=1):
         print("Type = {}".format(6))
         return probability_density_function_6(sigma, skewness_, kurtosis_)
 
+def calculate_roughness(data):
+
+    return np.sum(np.abs(data - np.mean(data))) / len(data)
 
 def sample_pdf(pdf, x1=-4, x2=4, n1=100000, n2=100000):
 
@@ -141,26 +144,46 @@ def sample_pdf(pdf, x1=-4, x2=4, n1=100000, n2=100000):
 
 def print_summary(pdf=None, data=None):
 
+    if pdf is not None and data is None:
 
-	if pdf is not None and data is None:
+        data = sample_pdf(pdf=pdf)
 
-		data = sample_pdf(pdf=pdf)
+    print("Roughness: {}".format(calculate_roughness(data)))
+    print("Mean = {}".format(np.mean(data)))
+    print("Median = {}".format(np.median(data)))
+    print("Variance = {}".format(np.var(data)))
+    print("Standard Deviation = {}".format(np.std(data)))
+    print("Skewness = {}".format(skew(data)))
+    print("Kurtosis = {}".format(kurtosis(data)))
+    print("Min-Max = {}".format(np.min(data), np.max(data)))
 
-	return describe(data)
+
+def print_moments(pdf=None, data=None, n = 4):
+
+    if pdf is not None and data is None:
+
+        data = sample_pdf(pdf=pdf)
+
+    for k in range(1, n + 1):
+
+        print("{}th moment = {}".format(k, moment(data, k)))
 
 
-def plot_pdf(pdf = None, data = None):
-  
-  if pdf is not None and data is None:
 
-    data = sample_pdf(pdf = pdf)
-  
-  ax = sns.histplot(data,
-                  bins=500,
-                  kde=True,
-                  color='red',
-                  fill = False,
-                  stat = 'probability',
-                  line_kws = {'linewidth':10})
+def plot_pdf(pdf=None, data=None):
 
-  ax.set(xlabel='Sample', ylabel='Probability')
+    if pdf is not None and data is None:
+
+        data = sample_pdf(pdf=pdf)
+                                                
+    sns.histplot(data,
+                      bins=500,
+                      kde=True,
+                      color='red',
+                      fill=False,
+                      stat='probability',
+                      line_kws={'linewidth': 10})
+
+
+
+
